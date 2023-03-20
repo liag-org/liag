@@ -53,8 +53,7 @@ export default function Quests() {
   const [isCategoryVisible, setIsCategoryVisible] = useState<boolean>(false);
 
   return (
-    <div className="flex h-screen">
-      <div className="h-full w-[256px] bg-[#171717]"></div>
+    <div className="w-full">
       <DefaultPageLayout
         title="Quests"
         buttonChildren={
@@ -131,20 +130,28 @@ export default function Quests() {
                                 ? "absolute top-16 left-0 block h-[1px] w-full bg-[#363636] "
                                 : "hidden"
                             }></span>
-                          {quests.docs
-                            .filter(
-                              (quest: { category: { id: string } }) =>
-                                quest.category.id === category.id,
-                            )
-                            .map((quest: { id: string; title: string }) => (
-                              <li key={quest.id}>
-                                <NavLink
-                                  to={`/quests/${quest.id}`}
-                                  className="block w-full rounded p-3 text-[#fff] hover:bg-[#363636] hover:text-[#fff]">
-                                  {quest.title}
-                                </NavLink>
-                              </li>
-                            ))}
+                          {quests && quests.docs.length > 0 ? (
+                            quests.docs
+                              .filter(
+                                (quest: { category: { id: string } }) =>
+                                  quest.category.id === category.id,
+                              )
+                              .map((quest: { id: string; title: string }) => (
+                                <li key={quest.id}>
+                                  <NavLink
+                                    to={`/quests/${quest.id}`}
+                                    className="block w-full rounded p-3 text-[#fff] hover:bg-[#363636] hover:text-[#fff]">
+                                    {quest.title}
+                                  </NavLink>
+                                </li>
+                              ))
+                          ) : (
+                            <li>
+                              <span className="block w-full rounded p-3 text-[#fff] hover:bg-[#363636] hover:text-[#fff]">
+                                No quests
+                              </span>
+                            </li>
+                          )}
                         </ul>
                       </div>
                     </li>

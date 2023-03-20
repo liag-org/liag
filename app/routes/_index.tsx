@@ -3,6 +3,7 @@ import type { LoaderArgs } from "@remix-run/node";
 import { getUserSession, logout } from "@/session.server";
 import { isAfter } from "date-fns";
 import { json } from "@remix-run/node";
+import { DefaultPageLayout } from "@/components/templates/default-layout";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userSession = await getUserSession(request);
@@ -36,25 +37,22 @@ export default function _index() {
   const data = matches.find(match => match.id === "root");
   const { userSession } = data?.data || {};
   const { quests, error } = useLoaderData();
-  console.log(quests);
   return (
-    <div>
+    <div className="w-full">
       {userSession ? (
         <div>
-          Hello {userSession.user?.firstName}!
-          <Form action="/logout" method="post">
-            <button type="submit">Logout</button>
-          </Form>
-          {error && <div>{error}</div>}
-          {quests && (
-            <div>
-              {quests.docs.map((quest: { id: string; title: string }) => (
-                <div key={quest.id}>
-                  <Link to={`/quests/${quest.id}`}>{quest.title}</Link>
-                </div>
-              ))}
-            </div>
-          )}
+          <DefaultPageLayout title="Home">
+            {error && <div>{error}</div>}
+            {quests && (
+              <div>
+                {quests.docs.map((quest: { id: string; title: string }) => (
+                  <div key={quest.id}>
+                    <Link to={`/quests/${quest.id}`}>{quest.title}</Link>
+                  </div>
+                ))}
+              </div>
+            )}
+          </DefaultPageLayout>
         </div>
       ) : (
         <div>
