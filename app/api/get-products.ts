@@ -1,9 +1,8 @@
 import { json } from "@remix-run/server-runtime";
 
-export async function getProductById(token: string, productId?: string) {
-  if (!productId) return false;
+export async function getProducts(token: string) {
   try {
-    const req = await fetch(`http://localhost:3000/api/products/${productId}`, {
+    const req = await fetch(`http://localhost:3000/api/products`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

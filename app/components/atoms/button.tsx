@@ -10,7 +10,7 @@ interface Props {
 export const PrimaryButton = ({ className, name, type, children }: Props) => {
   return (
     <button
-      className={`h-10 rounded bg-gradient-to-r from-[#7369F1] to-[#a869f1] px-3 ${className}`}
+      className={`h-10 min-w-[80px] rounded bg-gradient-to-r from-[#7369F1] to-[#a869f1] px-3 ${className}`}
       type={type}>
       {children}
     </button>

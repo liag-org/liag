@@ -16,23 +16,26 @@ import { isAfter } from "date-fns";
 import { getUserSession, logout } from "@/session.server";
 
 import styles from "./glossy/global.css";
+import { getUserById } from "./api/get-user";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
 export const loader = async ({ request }: LoaderArgs) => {
   const locale = await i18next.getLocale(request);
   const userSession = await getUserSession(request);
+  let userRequest;
   let isExpired;
 
   if (userSession) {
     console.info("userSession", "exist");
+    userRequest = await getUserById(userSession.token, userSession.user.id);
     const expires = new Date(userSession.exp * 1000);
     const now = new Date();
     isExpired = isAfter(now, expires);
     if (isExpired) return await logout(request);
   }
 
-  return json({ locale, userSession, isExpired });
+  return json({ locale, userSession, isExpired, user: userRequest });
 };
 
 export const handle = {
@@ -46,9 +49,9 @@ export const meta: MetaFunction = () => ({
 });
 
 export default function App() {
-  const { locale } = useLoaderData<typeof loader>();
+  const { locale, user } = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
-
+  console.log(user);
   useEffect(() => {
     i18n.changeLanguage(locale).then(() => {
       console.log("Language changed to", locale);

@@ -1,32 +1,23 @@
-import { getUserById } from "@/api/get-user";
-import { getUserSession } from "@/session.server";
-import { Form, NavLink, useMatches } from "@remix-run/react";
-import type { LoaderArgs } from "@remix-run/server-runtime";
-import { redirect } from "@remix-run/server-runtime";
-import { json } from "@remix-run/server-runtime";
+import { Form, useMatches } from "@remix-run/react";
 import NavItem from "../molecules/nav-item";
-
-export const loader = async ({ request, params }: LoaderArgs) => {
-  const userSession = await getUserSession(request);
-  if (!userSession) return redirect("/login");
-  const req = await getUserById(userSession.token, params?.userId);
-  return json(req);
-};
 
 export default function Navbar() {
   const matches = useMatches();
   const data = matches.find(match => match.id === "root");
-  const { userSession } = data?.data || {};
+  const { user } = data?.data || {};
 
-  console.log(userSession);
   return (
     <div className="flex h-full w-64 flex-col justify-between bg-[#171717] ">
       <div>
         <div className="p-4">
-          {userSession && (
+          {user && (
             <div>
-              <div>{userSession.user.firstName}</div>
-              <div>{userSession.user.golds}</div>
+              <img
+                src={`http://localhost:3000${user.avatar.url}`}
+                alt="PP zak"
+              />
+              <div>{user.firstName}</div>
+              <div>{user.golds}</div>
             </div>
           )}
         </div>
