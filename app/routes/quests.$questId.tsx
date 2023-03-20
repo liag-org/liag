@@ -21,37 +21,67 @@ export const action = async ({ request, params }: ActionArgs) => {
   const tasks = req.tasks;
 
   const body = await request.formData();
-  const formEntries = Object.fromEntries(body.entries());
-  const updatedTaskId = Object.keys(formEntries)[0];
-  const updatedTask = tasks.find(
-    (task: { id: string }) => task.id === updatedTaskId,
-  );
-  updatedTask.completed = !updatedTask.completed;
-  const previousTaskIndex = tasks.findIndex(
-    (task: { id: string }) => task.id === updatedTaskId,
-  );
-  tasks.splice(previousTaskIndex, 1, updatedTask);
 
-  try {
-    const req = await fetch(
-      `http://localhost:3000/api/quests/${params?.questId}`,
+  switch (body.get("action")) {
+    case "completed":
       {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${userSession.token}`,
-        },
-        body: JSON.stringify({
-          ...formEntries,
-          tasks: tasks,
-        }),
-      },
-    );
-  } catch (error) {
-    console.error(error);
+        try {
+          const req = await fetch(
+            `http://localhost:3000/api/quests/${params?.questId}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `JWT ${userSession.token}`,
+              },
+              body: JSON.stringify({
+                completed: true,
+              }),
+            },
+          );
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      break;
+    case "update-task":
+      {
+        const formEntries = Object.fromEntries(body.entries());
+        const updatedTaskId = Object.keys(formEntries)[0];
+        const updatedTask = tasks.find(
+          (task: { id: string }) => task.id === updatedTaskId,
+        );
+        updatedTask.completed = !updatedTask.completed;
+        const previousTaskIndex = tasks.findIndex(
+          (task: { id: string }) => task.id === updatedTaskId,
+        );
+        tasks.splice(previousTaskIndex, 1, updatedTask);
+
+        try {
+          const req = await fetch(
+            `http://localhost:3000/api/quests/${params?.questId}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `JWT ${userSession.token}`,
+              },
+              body: JSON.stringify({
+                ...formEntries,
+                tasks: tasks,
+              }),
+            },
+          );
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      break;
+    default:
+      break;
   }
 
-  return json({ tasks, updatedTaskId });
+  return json({ tasks });
 };
 
 export default function Quest() {
@@ -95,6 +125,7 @@ export default function Quest() {
                   className="flex items-start gap-[10px] "
                   key={task.id}>
                   <input type="hidden" name={task.id} value="false" />
+                  <input type="hidden" name="action" value="update-task" />
                   <CustomCheckbox
                     className="mt-[3px]"
                     id={task.id}
@@ -137,9 +168,15 @@ export default function Quest() {
           />
           {data.pinned ? "Pinned" : "Pin"}
         </button>
-        <PrimaryButton className=" text-[14px] font-bold" name="complete">
-          COMPLETE
-        </PrimaryButton>
+        <Form method="post">
+          <input type="hidden" name="action" value="completed" />
+          <PrimaryButton
+            className=" text-[14px] font-bold"
+            name="complete"
+            type="submit">
+            COMPLETE
+          </PrimaryButton>
+        </Form>
       </div>
     </div>
   );

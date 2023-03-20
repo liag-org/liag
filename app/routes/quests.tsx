@@ -18,7 +18,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     console.info("userSession", userSession);
     try {
       const [questsResponse, categoriesResponse] = await Promise.all([
-        fetch("http://localhost:3000/api/quests"),
+        fetch("http://localhost:3000/api/quests?limit=30"),
         fetch("http://localhost:3000/api/categories"),
         {
           method: "GET",
