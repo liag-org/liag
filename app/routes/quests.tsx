@@ -66,7 +66,7 @@ export default function Quests() {
         }>
         <div className="flex h-full max-w-[1024px] rounded border border-[#363636]">
           {userSession ? (
-            <nav className="w-[30%] border-r-[1px] border-[#363636]">
+            <nav className="flex w-[30%] flex-col justify-between border-r-[1px] border-[#363636]">
               <ul>
                 {categories.docs.map(
                   (category: { id: string; title: string }) => (
@@ -90,8 +90,12 @@ export default function Quests() {
                                 (
                                 {
                                   quests.docs.filter(
-                                    (quest: { category: { id: string } }) =>
-                                      quest.category.id === category.id,
+                                    (quest: {
+                                      category: { id: string };
+                                      completed: boolean;
+                                    }) =>
+                                      quest.category.id === category.id &&
+                                      quest.completed === false,
                                   ).length
                                 }
                                 )
@@ -117,8 +121,12 @@ export default function Quests() {
                               clickedCategoryId === category.id &&
                               isCategoryVisible &&
                               quests.docs.filter(
-                                (quest: { category: { id: string } }) =>
-                                  quest.category.id === category.id,
+                                (quest: {
+                                  category: { id: string };
+                                  completed: boolean;
+                                }) =>
+                                  quest.category.id === category.id &&
+                                  quest.completed === false,
                               ).length > 0
                                 ? "block"
                                 : "none",
@@ -133,8 +141,12 @@ export default function Quests() {
                           {quests && quests.docs.length > 0 ? (
                             quests.docs
                               .filter(
-                                (quest: { category: { id: string } }) =>
-                                  quest.category.id === category.id,
+                                (quest: {
+                                  category: { id: string };
+                                  completed: boolean;
+                                }) =>
+                                  quest.category.id === category.id &&
+                                  quest.completed === false,
                               )
                               .map((quest: { id: string; title: string }) => (
                                 <li key={quest.id}>
@@ -158,6 +170,75 @@ export default function Quests() {
                   ),
                 )}
               </ul>
+              <div
+                className="relative cursor-pointer border-t border-[#363636] bg-[#171717] py-5 px-5 text-[16px]"
+                onClick={() => {
+                  if (clickedCategoryId === "completed") {
+                    setIsCategoryVisible(!isCategoryVisible);
+                  } else {
+                    setClickedCategoryId("completed");
+                    setIsCategoryVisible(true);
+                  }
+                }}>
+                <div className="flex flex-col gap-10 ">
+                  <div className="flex justify-between">
+                    <h4 className="flex items-center gap-2">
+                      Completed{" "}
+                      {
+                        <span>
+                          (
+                          {
+                            quests.docs.filter(
+                              (quest: { completed: boolean }) =>
+                                quest.completed,
+                            ).length
+                          }
+                          )
+                        </span>
+                      }{" "}
+                    </h4>
+                    <img
+                      className={`transform ${
+                        clickedCategoryId === "completed" && isCategoryVisible
+                          ? "rotate-90"
+                          : "rotate-0"
+                      } transition-transform duration-300`}
+                      src="/assets/icons/drop-arrow.svg"
+                      alt="arrow icon"
+                    />
+                  </div>
+                  <span
+                    className={
+                      clickedCategoryId === "completed" && isCategoryVisible
+                        ? "absolute top-16 left-0 block h-[1px] w-full bg-[#363636] "
+                        : "hidden"
+                    }></span>
+
+                  <ul
+                    className={
+                      clickedCategoryId === "completed" &&
+                      isCategoryVisible &&
+                      quests.docs.filter(
+                        (quest: { completed: boolean }) => quest.completed,
+                      ).length > 0
+                        ? "block text-[14px]"
+                        : "hidden"
+                    }>
+                    {quests.docs
+                      .filter(
+                        (quest: { completed: boolean }) => quest.completed,
+                      )
+                      .map((quest: { id: string; title: string }) => (
+                        <Link
+                          to={`/quests/${quest.id}`}
+                          className="block w-full rounded p-3 text-[#fff] hover:bg-[#363636] hover:text-[#fff]"
+                          key={quest.id}>
+                          {quest.title}
+                        </Link>
+                      ))}
+                  </ul>
+                </div>
+              </div>
             </nav>
           ) : (
             <div>

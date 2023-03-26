@@ -1,11 +1,12 @@
 import { getQuestById } from "@/api/get-quest";
+import { getUserById } from "@/api/get-user";
 import { PrimaryButton } from "@/components/atoms/button";
 import { CustomCheckbox } from "@/components/atoms/checkbox";
 import { getUserSession } from "@/session.server";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import type { ActionArgs, LoaderArgs } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
-import { json } from "react-router";
+import { json, useNavigate } from "react-router";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const userSession = await getUserSession(request);
@@ -19,16 +20,18 @@ export const action = async ({ request, params }: ActionArgs) => {
   if (!userSession) return redirect("/login");
   const req = await getQuestById(userSession.token, params?.questId);
   const tasks = req.tasks;
+  const pinned = req.pinned;
 
   const body = await request.formData();
 
   switch (body.get("action")) {
     case "completed":
       {
+        const user = await getUserById(userSession.token, userSession.user.id);
+
         try {
-          const req = await fetch(
-            `http://localhost:3000/api/quests/${params?.questId}`,
-            {
+          const [responseCompleted, responseUpdateGold] = await Promise.all([
+            fetch(`http://localhost:3000/api/quests/${params?.questId}`, {
               method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
@@ -36,9 +39,21 @@ export const action = async ({ request, params }: ActionArgs) => {
               },
               body: JSON.stringify({
                 completed: true,
+                pinned: false,
               }),
-            },
-          );
+            }),
+            fetch(`http://localhost:3000/api/users/${user.id}`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `JWT ${userSession.token}`,
+              },
+              body: JSON.stringify({
+                golds: user.golds + req.golds,
+              }),
+            }),
+          ]);
+          return redirect(`/quests`);
         } catch (error) {
           console.error(error);
         }
@@ -77,6 +92,27 @@ export const action = async ({ request, params }: ActionArgs) => {
         }
       }
       break;
+    case "pinned":
+      {
+        try {
+          const req = await fetch(
+            `http://localhost:3000/api/quests/${params?.questId}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `JWT ${userSession.token}`,
+              },
+              body: JSON.stringify({
+                pinned: !pinned,
+              }),
+            },
+          );
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      break;
     default:
       break;
   }
@@ -99,9 +135,19 @@ export default function Quest() {
   }) => {
     submit(e.currentTarget, { replace: true });
   };
+  const navigate = useNavigate();
 
   return (
-    <div className="flex h-full justify-between">
+    <div className="relative flex h-full justify-between">
+      <div
+        className={
+          data.completed === true
+            ? "absolute flex h-full w-full items-center justify-center rounded bg-[#080808]/[.6]"
+            : "hidden"
+        }>
+        {" "}
+        <span className="-rotate-45 text-[50px] font-black">COMPLETED</span>
+      </div>
       <div className="flex w-full flex-col gap-10">
         <h2 className="text-[24px]">{data.title}</h2>
         <div className="w-[60%]">
@@ -132,7 +178,7 @@ export default function Quest() {
                     checked={task.completed}
                     name={task.id}
                   />
-                  <label className="cursor-pointer" htmlFor={task.id}>
+                  <label className=" w-64 cursor-pointer" htmlFor={task.id}>
                     {task.title}
                   </label>
                 </Form>
@@ -149,29 +195,37 @@ export default function Quest() {
               {data.xp} <span className="font-bold text-[#69D0F1]">XP</span>
             </p>
             <p>
-              {data.gold} <span className="font-bold text-[#E4BC2F]">Gold</span>
+              {data.golds}{" "}
+              <span className="font-bold text-[#E4BC2F]">Gold</span>
             </p>
           </div>
         </div>
       </div>
-      <div className="flex w-48 flex-col justify-between">
-        <button
-          onClick={() => {
-            data.pinned = !data.pinned;
-            console.log(data.pinned);
-          }}
-          className="flex h-fit w-fit items-center gap-2 self-end whitespace-nowrap rounded border border-[#363636] py-[10px] px-3 text-[14px] ">
-          <img
-            className="h-[18px] w-[18px]"
-            src="/assets/icons/pin.svg"
-            alt="pin icon"
-          />
-          {data.pinned ? "Pinned" : "Pin"}
-        </button>
+      <div className="flex w-48 flex-col items-end justify-between">
+        <Form method="post">
+          <input type="hidden" name="action" value="pinned" />
+          <button
+            type="submit"
+            name="pinned"
+            className={
+              "flex h-fit w-fit items-center gap-2 self-end whitespace-nowrap rounded border border-[#363636] py-[10px] px-3 text-[14px] " +
+              (data.pinned ? "bg-[#363636] text-white" : "")
+            }>
+            <img
+              className="h-[18px] w-[18px]"
+              src="/assets/icons/pin.svg"
+              alt="pin icon"
+            />
+            {data.pinned ? "Pinned" : "Pin"}
+          </button>
+        </Form>
         <Form method="post">
           <input type="hidden" name="action" value="completed" />
           <PrimaryButton
-            className=" text-[14px] font-bold"
+            disabled={data.tasks.some(
+              (task: { completed: boolean }) => !task.completed,
+            )}
+            className=" text-[14px] font-bold disabled:bg-[#363636] disabled:text-[#9F9F9F]"
             name="complete"
             type="submit">
             COMPLETE

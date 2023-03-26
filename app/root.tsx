@@ -51,7 +51,7 @@ export const meta: MetaFunction = () => ({
 export default function App() {
   const { locale, user } = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
-  console.log(user);
+  // console.log(user);
   useEffect(() => {
     i18n.changeLanguage(locale).then(() => {
       console.log("Language changed to", locale);

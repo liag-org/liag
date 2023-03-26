@@ -10,14 +10,16 @@ interface Props {
 export const PrimaryButton = ({
   className,
   name,
+  disabled,
   type,
   children,
   onClick,
 }: Props) => {
   return (
     <button
+      disabled={disabled}
       onClick={onClick}
-      className={`h-10 min-w-[80px] rounded bg-gradient-to-r from-[#7369F1] to-[#a869f1] px-3 ${className}`}
+      className={`h-10 min-w-[80px] rounded bg-[#7369F1]  px-3 ${className}`}
       type={type}>
       {children}
     </button>
@@ -26,7 +28,7 @@ export const PrimaryButton = ({
 
 export const SecondaryButton = ({
   className,
-  name,
+  children,
   type,
   onClick,
   disabled,
@@ -35,9 +37,9 @@ export const SecondaryButton = ({
     <button
       disabled={disabled}
       onClick={onClick}
-      className={`${className}`}
+      className={`h-10 min-w-[80px] rounded bg-[#851526]  px-3  ${className}`}
       type={type}>
-      {name}
+      {children}
     </button>
   );
 };
