@@ -2,23 +2,18 @@ import { DefaultPageLayout } from "@/components/templates/default-layout";
 import { useOutlet } from "react-router";
 import { Link, NavLink, useLoaderData, useMatches } from "@remix-run/react";
 import type { LoaderArgs } from "@remix-run/node";
-import { getUserSession, logout } from "@/session.server";
-import { isAfter } from "date-fns";
+import { getUserSession } from "@/session.server";
 import { json } from "@remix-run/node";
 import { useState } from "react";
+import { getQuests } from "@/api/get-quest";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userSession = await getUserSession(request);
 
   if (userSession) {
-    const expires = new Date(userSession.exp * 1000);
-    const now = new Date();
-    const isExpired = isAfter(now, expires);
-    if (isExpired) return await logout(request);
-    console.info("userSession", userSession);
     try {
       const [questsResponse, categoriesResponse] = await Promise.all([
-        fetch("http://localhost:3000/api/quests"),
+        getQuests(userSession.token, userSession.user.id),
         fetch("http://localhost:3000/api/categories"),
         {
           method: "GET",
@@ -28,10 +23,10 @@ export const loader = async ({ request }: LoaderArgs) => {
           },
         },
       ]);
-      const quests = await questsResponse.json();
+      const quests = await questsResponse;
       const categories = await categoriesResponse.json();
 
-      return json({ quests, categories });
+      return json({ quests: quests, categories });
     } catch (error) {
       console.error(error);
       return json({ error: "Invalid credentials" }, { status: 401 });
@@ -53,8 +48,7 @@ export default function Quests() {
   const [isCategoryVisible, setIsCategoryVisible] = useState<boolean>(false);
 
   return (
-    <div className="flex h-screen">
-      <div className="h-full w-[256px] bg-[#171717]"></div>
+    <div className="w-full">
       <DefaultPageLayout
         title="Quests"
         buttonChildren={
@@ -67,7 +61,7 @@ export default function Quests() {
         }>
         <div className="flex h-full max-w-[1024px] rounded border border-[#363636]">
           {userSession ? (
-            <nav className="w-[30%] border-r-[1px] border-[#363636]">
+            <nav className="flex w-[30%] flex-col justify-between border-r-[1px] border-[#363636]">
               <ul>
                 {categories.docs.map(
                   (category: { id: string; title: string }) => (
@@ -91,8 +85,12 @@ export default function Quests() {
                                 (
                                 {
                                   quests.docs.filter(
-                                    (quest: { category: { id: string } }) =>
-                                      quest.category.id === category.id,
+                                    (quest: {
+                                      category: { id: string };
+                                      completed: boolean;
+                                    }) =>
+                                      quest.category.id === category.id &&
+                                      quest.completed === false,
                                   ).length
                                 }
                                 )
@@ -118,8 +116,12 @@ export default function Quests() {
                               clickedCategoryId === category.id &&
                               isCategoryVisible &&
                               quests.docs.filter(
-                                (quest: { category: { id: string } }) =>
-                                  quest.category.id === category.id,
+                                (quest: {
+                                  category: { id: string };
+                                  completed: boolean;
+                                }) =>
+                                  quest.category.id === category.id &&
+                                  quest.completed === false,
                               ).length > 0
                                 ? "block"
                                 : "none",
@@ -131,26 +133,107 @@ export default function Quests() {
                                 ? "absolute top-16 left-0 block h-[1px] w-full bg-[#363636] "
                                 : "hidden"
                             }></span>
-                          {quests.docs
-                            .filter(
-                              (quest: { category: { id: string } }) =>
-                                quest.category.id === category.id,
-                            )
-                            .map((quest: { id: string; title: string }) => (
-                              <li key={quest.id}>
-                                <NavLink
-                                  to={`/quests/${quest.id}`}
-                                  className="block w-full rounded p-3 text-[#fff] hover:bg-[#363636] hover:text-[#fff]">
-                                  {quest.title}
-                                </NavLink>
-                              </li>
-                            ))}
+                          {quests && quests.docs.length > 0 ? (
+                            quests.docs
+                              .filter(
+                                (quest: {
+                                  category: { id: string };
+                                  completed: boolean;
+                                }) =>
+                                  quest.category.id === category.id &&
+                                  quest.completed === false,
+                              )
+                              .map((quest: { id: string; title: string }) => (
+                                <li key={quest.id}>
+                                  <NavLink
+                                    to={`/quests/${quest.id}`}
+                                    className="block w-full rounded p-3 text-[#fff] hover:bg-[#363636] hover:text-[#fff]">
+                                    {quest.title}
+                                  </NavLink>
+                                </li>
+                              ))
+                          ) : (
+                            <li>
+                              <span className="block w-full rounded p-3 text-[#fff] hover:bg-[#363636] hover:text-[#fff]">
+                                No quests
+                              </span>
+                            </li>
+                          )}
                         </ul>
                       </div>
                     </li>
                   ),
                 )}
               </ul>
+              <div
+                className="relative cursor-pointer border-t border-[#363636] bg-[#171717] py-5 px-5 text-[16px]"
+                onClick={() => {
+                  if (clickedCategoryId === "completed") {
+                    setIsCategoryVisible(!isCategoryVisible);
+                  } else {
+                    setClickedCategoryId("completed");
+                    setIsCategoryVisible(true);
+                  }
+                }}>
+                <div className="flex flex-col gap-10 ">
+                  <div className="flex justify-between">
+                    <h4 className="flex items-center gap-2">
+                      Completed{" "}
+                      {
+                        <span>
+                          (
+                          {
+                            quests.docs.filter(
+                              (quest: { completed: boolean }) =>
+                                quest.completed,
+                            ).length
+                          }
+                          )
+                        </span>
+                      }{" "}
+                    </h4>
+                    <img
+                      className={`transform ${
+                        clickedCategoryId === "completed" && isCategoryVisible
+                          ? "rotate-90"
+                          : "rotate-0"
+                      } transition-transform duration-300`}
+                      src="/assets/icons/drop-arrow.svg"
+                      alt="arrow icon"
+                    />
+                  </div>
+                  <span
+                    className={
+                      clickedCategoryId === "completed" && isCategoryVisible
+                        ? "absolute top-16 left-0 block h-[1px] w-full bg-[#363636] "
+                        : "hidden"
+                    }></span>
+
+                  <ul
+                    className={
+                      clickedCategoryId === "completed" &&
+                      isCategoryVisible &&
+                      quests.docs.filter(
+                        (quest: { completed: boolean }) => quest.completed,
+                      ).length > 0
+                        ? "block text-[14px]"
+                        : "hidden"
+                    }>
+                    {quests.docs
+                      .filter(
+                        (quest: { completed: boolean }) => quest.completed,
+                      )
+                      .map((quest: { id: string; title: string }) => (
+                        <Link
+                          to={`/quests/${quest.id}`}
+                          className="block w-full rounded p-3 text-[#fff] hover:bg-[#363636] hover:text-[#fff]"
+                          key={quest.id}>
+                          {quest.title}
+                        </Link>
+                      ))}
+                  </ul>
+                </div>
+              </div>
             </nav>
           ) : (
             <div>

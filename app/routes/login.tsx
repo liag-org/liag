@@ -48,7 +48,7 @@ export default function Login() {
             type={"password"}
           />
           <div className="flex gap-2">
-            <CustomCheckbox id="check-box" />
+            <CustomCheckbox id="check-box" name={""} checked={false} />
             <label
               htmlFor="check-box"
               className="w-5/6 text-[12px] font-normal text-[#9F9F9F]">

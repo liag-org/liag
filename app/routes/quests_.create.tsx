@@ -1,4 +1,4 @@
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, Link } from "@remix-run/react";
 import type { ActionArgs, ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json, useActionData } from "react-router";
@@ -19,9 +19,9 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
   const body = await request.formData();
   const formEntries = Object.fromEntries(body.entries());
-  const parsedTasks = JSON.parse(formEntries.tasks);
+  const parsedTasks = JSON.parse(formEntries.tasks as string);
   try {
-    const response = await fetch("http://localhost:3000/api/quests", {
+    const req = await fetch("http://localhost:3000/api/quests", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,10 +31,10 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         ...formEntries,
         tasks: parsedTasks,
         category: formEntries.category,
+        owner: userSession.user.id,
       }),
     });
-    const data = await response.json();
-    return json({ data });
+    return redirect("/quests");
   } catch (error) {
     console.error("---> Error on create quest", error);
     return json({ error: "Invalid credentials" }, { status: 401 });
@@ -60,19 +60,16 @@ export const loader = async ({ request }: { request: Request }) => {
 };
 
 export default function CreateQuest() {
-  const [task, setTask] = useState<{ title: string; is_completed: boolean }>({
+  const [task, setTask] = useState<{ title: string; completed: boolean }>({
     title: "",
-    is_completed: false,
+    completed: false,
   });
   const [tasks, setSubTasks] = useState<
-    { title: string; is_completed: boolean }[]
+    { title: string; completed: boolean }[]
   >([]);
-  const data = useActionData();
-  console.info(tasks);
-  console.info("--------->", data);
+  const [newTask, setNewTask] = useState("");
   return (
-    <div className="flex h-screen">
-      <div className="h-full w-[256px] bg-[#171717]"></div>
+    <div className="w-full">
       <DefaultPageLayout title={"Create new quest"}>
         <Form
           method={"post"}
@@ -94,38 +91,59 @@ export default function CreateQuest() {
             <div className="flex">
               <img src="/assets/icons/flag.svg" alt="" />
               <SecondaryInputField
+                value={newTask}
                 label=""
                 name=""
                 placeholder="Add new tasks"
-                onChange={(e: string) =>
-                  setTask({ title: e, is_completed: false })
-                }
+                onChange={(e: string) => {
+                  setTask({ title: e, completed: false });
+                  setNewTask(e);
+                }}
               />
             </div>
             <SecondaryButton
               className="flex h-10 items-center text-[14px]"
               name="Add task"
+              disabled={newTask === ""}
               onClick={() => {
                 setSubTasks([...tasks, task]);
-                setTask({ title: "", is_completed: false });
+                setTask({ title: "", completed: false });
+                setNewTask("");
               }}
             />
           </div>
-          <div>
+          <div
+            className="
+          flex flex-col gap-3
+          ">
             {tasks.map((task, index) => (
-              <div key={index} className="flex items-center gap-2">
+              <div
+                key={index}
+                className="flex items-center justify-between px-3 text-[14px]">
                 {task.title}
+                <img
+                  className="h-[14px] w-[14px] cursor-pointer"
+                  src="/assets/icons/close.svg"
+                  alt="close icon"
+                  onClick={() => {
+                    setSubTasks(tasks.filter((_, i) => i !== index));
+                  }}
+                />
               </div>
             ))}
           </div>
           <div className="flex gap-5">
             <PrimaryInputField
-              name="gold"
+              className="w-full"
+              type="number"
+              name="golds"
               label="Golds Earned"
               placeholder="0"
-              unit="Gold"
+              unit="Golds"
             />
             <PrimaryInputField
+              className="w-full"
+              type="number"
               name="xp"
               label="Xp Earned"
               placeholder="0"
@@ -137,7 +155,17 @@ export default function CreateQuest() {
             placeholder="Add a description..."
             name="description"
           />
-          <PrimaryButton className="" type="submit" name="CREATE" />
+          <PrimaryButton
+            className=""
+            type="submit"
+            name="create"
+            onClick={() => {
+              <div>
+                <h1>Success</h1>
+              </div>;
+            }}>
+            CREATE
+          </PrimaryButton>
         </Form>
       </DefaultPageLayout>
     </div>

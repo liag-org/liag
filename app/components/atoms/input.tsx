@@ -28,6 +28,8 @@ export const PrimaryInput = ({
   return (
     <div>
       <input
+        min={0}
+        max={9999999999}
         autoComplete="off"
         type={type}
         required={required}
