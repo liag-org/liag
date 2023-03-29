@@ -11,6 +11,7 @@ import {
 } from "@/components/molecules/input-field";
 import { SelectField } from "@/components/molecules/select-field";
 import { useState } from "react";
+import { DefaultPageLayout } from "@/components/templates/default-layout";
 
 export const action: ActionFunction = async ({ request }: ActionArgs) => {
   const userSession = await getUserSession(request);
@@ -40,7 +41,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
   }
 };
 
-export const loader = async ({ request }) => {
+export const loader = async ({ request }: { request: Request }) => {
   const userSession = await getUserSession(request);
   if (!userSession) return redirect("/login");
   try {
@@ -70,73 +71,75 @@ export default function CreateQuest() {
   console.info(tasks);
   console.info("--------->", data);
   return (
-    <div>
-      <h1>Create Quest</h1>
-      <Form
-        method={"post"}
-        className="mx-auto flex w-[400px] flex-col gap-5 rounded border border-[#363636] p-5">
-        <h2 className="text-[24px]">New quest</h2>
-        <PrimaryInputField
-          label="Title"
-          type="text"
-          name="title"
-          placeholder="Title of the quest..."
-        />
-        <SelectField
-          name="category"
-          label="Category"
-          placeholder="Select a category"
-        />
-        <input type="hidden" name="tasks" value={JSON.stringify(tasks)} />
-        <div className="flex max-w-[360px] items-center justify-between">
-          <div className="flex">
-            <img src="/assets/icons/flag.svg" alt="" />
-            <SecondaryInputField
-              label=""
-              name=""
-              placeholder="Add new tasks"
-              onChange={(e: string) =>
-                setTask({ title: e, is_completed: false })
-              }
+    <div className="flex h-screen">
+      <div className="h-full w-[256px] bg-[#171717]"></div>
+      <DefaultPageLayout title={"Create new quest"}>
+        <Form
+          method={"post"}
+          className=" flex h-fit w-[400px] flex-col gap-5 rounded border border-[#363636] p-5">
+          <h2 className="text-[24px]">New quest</h2>
+          <PrimaryInputField
+            label="Title"
+            type="text"
+            name="title"
+            placeholder="Title of the quest..."
+          />
+          <SelectField
+            name="category"
+            label="Category"
+            placeholder="Select a category"
+          />
+          <input type="hidden" name="tasks" value={JSON.stringify(tasks)} />
+          <div className="flex max-w-[360px] items-center justify-between">
+            <div className="flex">
+              <img src="/assets/icons/flag.svg" alt="" />
+              <SecondaryInputField
+                label=""
+                name=""
+                placeholder="Add new tasks"
+                onChange={(e: string) =>
+                  setTask({ title: e, is_completed: false })
+                }
+              />
+            </div>
+            <SecondaryButton
+              className="flex h-10 items-center text-[14px]"
+              name="Add task"
+              onClick={() => {
+                setSubTasks([...tasks, task]);
+                setTask({ title: "", is_completed: false });
+              }}
             />
           </div>
-          <SecondaryButton
-            className="flex h-10 items-center text-[14px]"
-            name="Add task"
-            onClick={() => {
-              setSubTasks([...tasks, task]);
-              setTask({ title: "", is_completed: false });
-            }}
+          <div>
+            {tasks.map((task, index) => (
+              <div key={index} className="flex items-center gap-2">
+                {task.title}
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-5">
+            <PrimaryInputField
+              name="gold"
+              label="Golds Earned"
+              placeholder="0"
+              unit="Gold"
+            />
+            <PrimaryInputField
+              name="xp"
+              label="Xp Earned"
+              placeholder="0"
+              unit="Xp"
+            />
+          </div>
+          <TextAreaInputField
+            label="Description"
+            placeholder="Add a description..."
+            name="description"
           />
-        </div>
-        <div>
-          {tasks.map((task, index) => (
-            <div key={index} className="flex items-center gap-2">
-              {task.title}
-            </div>
-          ))}
-        </div>
-        <div className="flex gap-5">
-          <PrimaryInputField
-            name="gold"
-            label="Golds Earned"
-            placeholder="0"
-            unit="Gold"
-          />
-          <PrimaryInputField
-            name="xp"
-            label="Xp Earned"
-            placeholder="0"
-            unit="Xp"
-          />
-        </div>
-        <TextAreaInputField
-          label="Description"
-          placeholder="Add a description..."
-          name="description"
-        />
-        <PrimaryButton className="" type="submit" name="CREATE" />
-      </Form>
+          <PrimaryButton className="" type="submit" name="CREATE" />
+        </Form>
+      </DefaultPageLayout>
     </div>
   );
 }

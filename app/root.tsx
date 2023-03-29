@@ -13,10 +13,9 @@ import i18next from "@/i18next.server";
 import { json } from "@remix-run/node";
 import { useEffect } from "react";
 import { isAfter } from "date-fns";
+import { getUserSession, logout } from "@/session.server";
 
 import styles from "./glossy/global.css";
-
-import { getUserSession, logout } from "@/session.server";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
@@ -59,7 +58,7 @@ export default function App() {
   return (
     <html lang={locale} dir={i18n.dir()}>
       <head>
-        <title>Liag - Life is a game</title>
+        <title>LIAG</title>
         <Meta />
         <Links />
       </head>

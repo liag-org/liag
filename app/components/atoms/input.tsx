@@ -83,12 +83,12 @@ export const TextAreaInput = ({
   const [height, setHeight] = useState("");
   const ref = useRef<HTMLTextAreaElement>(null);
 
-  function handleChangeTextarea(e) {
+  function handleChangeTextarea(e: React.ChangeEvent<HTMLTextAreaElement>) {
     if (e.target.scrollHeight < 54 || e.target.value.trim() === "") {
       setHeight("40");
     } else {
       const scHeight = e.target.scrollHeight;
-      setHeight(scHeight);
+      setHeight(scHeight.toString());
     }
   }
 

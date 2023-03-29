@@ -1,4 +1,3 @@
-import { getUserSession } from "@/session.server";
 import { json } from "@remix-run/server-runtime";
 
 export async function getQuestById(token: string, questId?: string) {
