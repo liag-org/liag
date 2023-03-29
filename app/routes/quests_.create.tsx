@@ -21,7 +21,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
   const formEntries = Object.fromEntries(body.entries());
   const parsedTasks = JSON.parse(formEntries.tasks as string);
   try {
-    const response = await fetch("http://localhost:3000/api/quests", {
+    const req = await fetch("http://localhost:3000/api/quests", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,10 +31,10 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         ...formEntries,
         tasks: parsedTasks,
         category: formEntries.category,
+        owner: userSession.user.id,
       }),
     });
-    const data = await response.json();
-    return json({ data });
+    return redirect("/quests");
   } catch (error) {
     console.error("---> Error on create quest", error);
     return json({ error: "Invalid credentials" }, { status: 401 });
@@ -60,17 +60,14 @@ export const loader = async ({ request }: { request: Request }) => {
 };
 
 export default function CreateQuest() {
-  const [task, setTask] = useState<{ title: string; is_completed: boolean }>({
+  const [task, setTask] = useState<{ title: string; completed: boolean }>({
     title: "",
-    is_completed: false,
+    completed: false,
   });
   const [tasks, setSubTasks] = useState<
-    { title: string; is_completed: boolean }[]
+    { title: string; completed: boolean }[]
   >([]);
   const [newTask, setNewTask] = useState("");
-  const data = useActionData();
-  console.info(tasks);
-  console.info("--------->", data);
   return (
     <div className="w-full">
       <DefaultPageLayout title={"Create new quest"}>
@@ -99,7 +96,7 @@ export default function CreateQuest() {
                 name=""
                 placeholder="Add new tasks"
                 onChange={(e: string) => {
-                  setTask({ title: e, is_completed: false });
+                  setTask({ title: e, completed: false });
                   setNewTask(e);
                 }}
               />
@@ -110,7 +107,7 @@ export default function CreateQuest() {
               disabled={newTask === ""}
               onClick={() => {
                 setSubTasks([...tasks, task]);
-                setTask({ title: "", is_completed: false });
+                setTask({ title: "", completed: false });
                 setNewTask("");
               }}
             />
@@ -139,10 +136,10 @@ export default function CreateQuest() {
             <PrimaryInputField
               className="w-full"
               type="number"
-              name="gold"
+              name="golds"
               label="Golds Earned"
               placeholder="0"
-              unit="Gold"
+              unit="Golds"
             />
             <PrimaryInputField
               className="w-full"

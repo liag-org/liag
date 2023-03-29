@@ -2,23 +2,18 @@ import { DefaultPageLayout } from "@/components/templates/default-layout";
 import { useOutlet } from "react-router";
 import { Link, NavLink, useLoaderData, useMatches } from "@remix-run/react";
 import type { LoaderArgs } from "@remix-run/node";
-import { getUserSession, logout } from "@/session.server";
-import { isAfter } from "date-fns";
+import { getUserSession } from "@/session.server";
 import { json } from "@remix-run/node";
 import { useState } from "react";
+import { getQuests } from "@/api/get-quest";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userSession = await getUserSession(request);
 
   if (userSession) {
-    const expires = new Date(userSession.exp * 1000);
-    const now = new Date();
-    const isExpired = isAfter(now, expires);
-    if (isExpired) return await logout(request);
-    console.info("userSession", userSession);
     try {
       const [questsResponse, categoriesResponse] = await Promise.all([
-        fetch("http://localhost:3000/api/quests?limit=30"),
+        getQuests(userSession.token, userSession.user.id),
         fetch("http://localhost:3000/api/categories"),
         {
           method: "GET",
@@ -28,10 +23,10 @@ export const loader = async ({ request }: LoaderArgs) => {
           },
         },
       ]);
-      const quests = await questsResponse.json();
+      const quests = await questsResponse;
       const categories = await categoriesResponse.json();
 
-      return json({ quests, categories });
+      return json({ quests: quests, categories });
     } catch (error) {
       console.error(error);
       return json({ error: "Invalid credentials" }, { status: 401 });

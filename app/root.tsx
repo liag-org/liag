@@ -17,6 +17,7 @@ import { getUserSession, logout } from "@/session.server";
 
 import styles from "./glossy/global.css";
 import { getUserById } from "./api/get-user";
+import { getLevels } from "./api/get-levels";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
@@ -25,6 +26,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const userSession = await getUserSession(request);
   let userRequest;
   let isExpired;
+  let levels;
 
   if (userSession) {
     console.info("userSession", "exist");
@@ -33,9 +35,10 @@ export const loader = async ({ request }: LoaderArgs) => {
     const now = new Date();
     isExpired = isAfter(now, expires);
     if (isExpired) return await logout(request);
+    levels = await getLevels(userSession.token);
   }
 
-  return json({ locale, userSession, isExpired, user: userRequest });
+  return json({ locale, userSession, isExpired, user: userRequest, levels });
 };
 
 export const handle = {
@@ -49,9 +52,8 @@ export const meta: MetaFunction = () => ({
 });
 
 export default function App() {
-  const { locale, user } = useLoaderData<typeof loader>();
+  const { locale } = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
-  // console.log(user);
   useEffect(() => {
     i18n.changeLanguage(locale).then(() => {
       console.log("Language changed to", locale);

@@ -1,13 +1,18 @@
+import { getUserLevel } from "@/utils/get-user-level";
 import { Form, useMatches } from "@remix-run/react";
 import NavItem from "../molecules/nav-item";
 
 export default function Navbar() {
   const matches = useMatches();
   const data = matches.find(match => match.id === "root");
-  const { user } = data?.data || {};
+  const { user, levels } = data?.data || {};
+  const matchedLevel = getUserLevel(
+    levels.docs.sort((a, b) => a.level - b.level),
+    user?.xp,
+  );
 
   return (
-    <div className="flex h-full w-64 flex-col justify-between bg-[#171717] ">
+    <div className="sticky top-0 left-0 flex h-full w-64 flex-col justify-between bg-[#171717]">
       <div>
         <div className="p-8">
           {user && (
@@ -15,13 +20,14 @@ export default function Navbar() {
               <div className="rounded bg-gradient-to-r from-[#AE8626] via-[#F7EF8A] to-[#EDC967] p-1 ">
                 <img
                   className="rounded"
-                  src={`http://localhost:3000${user.avatar.url}`}
+                  src={`http://localhost:3000${user.avatar?.url}`}
                   alt="PP zak"
                 />
               </div>
               <div className="font-bold capitalize">{user.firstName}</div>
               <div className="">
-                <span className="font-bold">Niveau :</span> {"2"}
+                <span className="font-bold">Niveau :</span>{" "}
+                {matchedLevel?.level}
               </div>
               <div>
                 <span className="font-bold text-[#E4BC2F]">Golds</span> :{" "}

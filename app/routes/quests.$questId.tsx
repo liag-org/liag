@@ -50,6 +50,7 @@ export const action = async ({ request, params }: ActionArgs) => {
               },
               body: JSON.stringify({
                 golds: user.golds + req.golds,
+                xp: user.xp + req.xp,
               }),
             }),
           ]);
@@ -150,7 +151,7 @@ export default function Quest() {
       </div>
       <div className="flex w-full flex-col gap-10">
         <h2 className="text-[24px]">{data.title}</h2>
-        <div className="w-[60%]">
+        <div className="w-[70%]">
           <h3 className="mb-5 border-b-[1px] border-[#363636] pb-[6px] text-[14px] text-[#9F9F9F]">
             Description
           </h3>
@@ -158,7 +159,7 @@ export default function Quest() {
             {data.description}
           </div>
         </div>
-        <div className="w-[60%]">
+        <div className="w-[70%]">
           <h3 className="mb-5 border-b-[1px] border-[#363636] pb-[6px] text-[14px] text-[#9F9F9F]">
             Objectifs
           </h3>
@@ -178,7 +179,7 @@ export default function Quest() {
                     checked={task.completed}
                     name={task.id}
                   />
-                  <label className=" w-64 cursor-pointer" htmlFor={task.id}>
+                  <label className=" w-72 cursor-pointer" htmlFor={task.id}>
                     {task.title}
                   </label>
                 </Form>
@@ -186,7 +187,7 @@ export default function Quest() {
             )}
           </div>
         </div>
-        <div className="w-[60%]">
+        <div className="w-[70%]">
           <h3 className="mb-5 border-b-[1px] border-[#363636] pb-[6px] text-[14px] text-[#9F9F9F]">
             Récompenses
           </h3>

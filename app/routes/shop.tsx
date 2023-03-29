@@ -20,7 +20,7 @@ export default function Shop() {
     <div className=" w-full">
       <DefaultPageLayout title="Shop">
         <div className="max-w-[1280px]">
-          <ul className="grid w-full grid-cols-4 grid-rows-2 gap-5">
+          <ul className="grid w-fit grid-flow-row grid-cols-4 gap-5 ">
             {data?.docs.map(
               (product: {
                 id: string;
@@ -30,24 +30,26 @@ export default function Shop() {
               }) => (
                 <li
                   key={product.id}
-                  className="box-border flex flex-col gap-[10px] rounded border border-[#363636] p-5">
-                  <div className="box-content flex h-44 w-full items-center justify-center rounded border bg-white">
-                    <img
-                      className=" w-24 overflow-hidden object-cover"
-                      src={`http://localhost:3000${product.image.url}`}
-                      alt={product.image.alt}
-                    />
+                  className=" box-border flex h-80 w-64 flex-col gap-[10px] rounded border border-[#363636] p-5">
+                  <div>
+                    <div className="flex h-32 items-center justify-center rounded border bg-white">
+                      <img
+                        className=" w-24  overflow-hidden object-cover"
+                        src={`http://localhost:3000${product.image.url}`}
+                        alt={product.image.alt}
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-col justify-between">
+                  <div className="flex h-full flex-col justify-between">
                     <div className="underline">{product.name}</div>
-                    <div className="flex flex-col gap-[10px] ">
+                    <div className="flex flex-col">
                       <div>
                         {product.price}{" "}
                         <span className="font-bold text-[#E4BC2F]">Golds</span>
                       </div>
                       <div>
-                        <PrimaryButton name={""} className="w-fit">
-                          BUY
+                        <PrimaryButton name={""} className={""}>
+                          Buy
                         </PrimaryButton>
                       </div>
                     </div>
