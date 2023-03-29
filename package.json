@@ -4,7 +4,7 @@
   "scripts": {
     "build": "remix build",
     "dev": "remix dev",
-    "start": "remix-serve build",
+    "start": "netlify serve",
     "typecheck": "tsc -b"
   },
   "dependencies": {
@@ -26,8 +26,10 @@
     "tailwindcss-radix": "^2.7.0"
   },
   "devDependencies": {
+    "@netlify/functions": "^1.4.0",
     "@remix-run/dev": "^1.13.0",
     "@remix-run/eslint-config": "^1.13.0",
+    "@remix-run/netlify": "^1.14.3",
     "@remix-run/serve": "^1.13.0",
     "@remix-run/server-runtime": "^1.13.0",
     "@types/react": "^18.0.25",
