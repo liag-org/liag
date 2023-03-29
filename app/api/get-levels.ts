@@ -1,8 +1,11 @@
+import getEnv from "@/utils/get-env";
 import { json } from "@remix-run/server-runtime";
+
+const env = getEnv();
 
 export async function getLevels(token: string) {
   try {
-    const req = await fetch(`http://localhost:3000/api/levels`, {
+    const req = await fetch(`${env.API_URL}/api/levels`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

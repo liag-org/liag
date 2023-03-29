@@ -1,10 +1,13 @@
+import getEnv from "@/utils/get-env";
 import { json } from "@remix-run/server-runtime";
+
+const env = getEnv();
 
 export async function getQuests(token: string, ownerId?: string) {
   if (!ownerId) return false;
   try {
     const req = await fetch(
-      `http://localhost:3000/api/quests?where[owner][equals]=${ownerId}`,
+      `${env.API_URL}/api/quests?where[owner][equals]=${ownerId}`,
       {
         method: "GET",
         headers: {
@@ -23,7 +26,7 @@ export async function getQuests(token: string, ownerId?: string) {
 export async function getQuestById(token: string, questId?: string) {
   if (!questId) return false;
   try {
-    const req = await fetch(`http://localhost:3000/api/quests/${questId}`, {
+    const req = await fetch(`${env.API_URL}/api/quests/${questId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

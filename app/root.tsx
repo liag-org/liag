@@ -19,11 +19,20 @@ import styles from "./glossy/global.css";
 import { getUserById } from "./api/get-user";
 import { getLevels } from "./api/get-levels";
 
+function getBrowserEnvironment() {
+  const env = process.env;
+
+  return {
+    API_URL: env.API_URL,
+  };
+}
+
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
 export const loader = async ({ request }: LoaderArgs) => {
   const locale = await i18next.getLocale(request);
   const userSession = await getUserSession(request);
+  const ENV = getBrowserEnvironment();
   let userRequest;
   let isExpired;
   let levels;
@@ -38,7 +47,14 @@ export const loader = async ({ request }: LoaderArgs) => {
     levels = await getLevels(userSession.token);
   }
 
-  return json({ locale, userSession, isExpired, user: userRequest, levels });
+  return json({
+    locale,
+    userSession,
+    isExpired,
+    user: userRequest,
+    levels,
+    env: ENV,
+  });
 };
 
 export const handle = {
@@ -52,7 +68,7 @@ export const meta: MetaFunction = () => ({
 });
 
 export default function App() {
-  const { locale } = useLoaderData<typeof loader>();
+  const { locale, env } = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
   useEffect(() => {
     i18n.changeLanguage(locale).then(() => {
@@ -66,6 +82,11 @@ export default function App() {
         <title>LIAG</title>
         <Meta />
         <Links />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(env)}`,
+          }}
+        />
       </head>
       <body className=" bg-[#121212] text-slate-50 font-inter ">
         <div>

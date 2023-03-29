@@ -4,12 +4,14 @@ import { json } from "@remix-run/node";
 import { PrimaryInputField } from "@/components/molecules/input-field";
 import { createUserSession } from "@/session.server";
 import { CustomCheckbox } from "@/components/atoms/checkbox";
+import getEnv from "@/utils/get-env";
 
 export const action = async ({ request }: ActionArgs) => {
   const body = await request.formData();
   const formData = Object.fromEntries(body.entries());
+  const env = getEnv();
   try {
-    const req = await fetch("http://localhost:3000/api/users/login", {
+    const req = await fetch(`${env.API_URL}/api/users/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

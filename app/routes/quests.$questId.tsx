@@ -23,7 +23,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   const pinned = req.pinned;
 
   const body = await request.formData();
-
+  const env = getEnv();
   switch (body.get("action")) {
     case "completed":
       {
@@ -31,7 +31,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
         try {
           const [responseCompleted, responseUpdateGold] = await Promise.all([
-            fetch(`http://localhost:3000/api/quests/${params?.questId}`, {
+            fetch(`${env.API_URL}/api/quests/${params?.questId}`, {
               method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
@@ -42,7 +42,7 @@ export const action = async ({ request, params }: ActionArgs) => {
                 pinned: false,
               }),
             }),
-            fetch(`http://localhost:3000/api/users/${user.id}`, {
+            fetch(`${env.API_URL}/api/users/${user.id}`, {
               method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
@@ -75,7 +75,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
         try {
           const req = await fetch(
-            `http://localhost:3000/api/quests/${params?.questId}`,
+            `${env.API_URL}/api/quests/${params?.questId}`,
             {
               method: "PATCH",
               headers: {
@@ -97,7 +97,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       {
         try {
           const req = await fetch(
-            `http://localhost:3000/api/quests/${params?.questId}`,
+            `${env.API_URL}/api/quests/${params?.questId}`,
             {
               method: "PATCH",
               headers: {

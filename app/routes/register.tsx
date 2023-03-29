@@ -3,12 +3,14 @@ import { Link, Form } from "@remix-run/react";
 import { PrimaryInputField } from "@/components/molecules/input-field";
 import { redirect } from "@remix-run/server-runtime";
 import { CustomCheckbox } from "@/components/atoms/checkbox";
+import getEnv from "@/utils/get-env";
 
 export const action = async ({ request }: ActionArgs) => {
   const body = await request.formData();
+  const env = getEnv();
   const formData = Object.fromEntries(body.entries());
   try {
-    const req = await fetch("http://localhost:3000/api/users", {
+    const req = await fetch(`${env.API_URL}/api/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

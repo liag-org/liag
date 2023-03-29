@@ -13,6 +13,7 @@ import { DefaultPageLayout } from "@/components/templates/default-layout";
 import { CustomCheckbox } from "@/components/atoms/checkbox";
 import { useState } from "react";
 import { getQuestById, getQuests } from "@/api/get-quest";
+import getEnv from "@/utils/get-env";
 
 export const loader = async ({ request }: { request: Request }) => {
   const userSession = await getUserSession(request);
@@ -45,9 +46,9 @@ export const action = async ({ request }: ActionArgs) => {
     (task: { id: string }) => task.id === updatedTaskId,
   );
   tasks.splice(previousTaskIndex, 1, updatedTask);
-
+  const env = getEnv();
   try {
-    const req = await fetch(`http://localhost:3000/api/quests/${questId}`, {
+    const req = await fetch(`${env.API_URL}/api/quests/${questId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

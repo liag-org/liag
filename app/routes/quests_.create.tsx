@@ -12,6 +12,7 @@ import {
 import { SelectField } from "@/components/molecules/select-field";
 import { useState } from "react";
 import { DefaultPageLayout } from "@/components/templates/default-layout";
+import getEnv from "@/utils/get-env";
 
 export const action: ActionFunction = async ({ request }: ActionArgs) => {
   const userSession = await getUserSession(request);
@@ -20,8 +21,9 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
   const body = await request.formData();
   const formEntries = Object.fromEntries(body.entries());
   const parsedTasks = JSON.parse(formEntries.tasks as string);
+  const env = getEnv();
   try {
-    const req = await fetch("http://localhost:3000/api/quests", {
+    const req = await fetch(`${env.API_URL}/api/quests`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,9 +45,10 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
 export const loader = async ({ request }: { request: Request }) => {
   const userSession = await getUserSession(request);
+  const env = getEnv();
   if (!userSession) return redirect("/login");
   try {
-    const req = await fetch("http://localhost:3000/api/categories", {
+    const req = await fetch(`${env.API_URL}/api/categories`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

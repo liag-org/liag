@@ -6,15 +6,16 @@ import { getUserSession } from "@/session.server";
 import { json } from "@remix-run/node";
 import { useState } from "react";
 import { getQuests } from "@/api/get-quest";
+import getEnv from "@/utils/get-env";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userSession = await getUserSession(request);
-
+  const env = getEnv();
   if (userSession) {
     try {
       const [questsResponse, categoriesResponse] = await Promise.all([
         getQuests(userSession.token, userSession.user.id),
-        fetch("http://localhost:3000/api/categories"),
+        fetch(`${env.API_URL}/api/categories`),
         {
           method: "GET",
           headers: {
