@@ -13,9 +13,9 @@ export const action = async ({ request }: ActionArgs) => {
   const id = formEntries.id;
   console.log("formEntries", formEntries);
 
-  const updateNameId = Object.keys(formEntries)[1];
-  const updatedName = formEntries[updateNameId];
-  console.log("updatedName", updatedName);
+  const updateProfileId = Object.keys(formEntries)[1];
+  const updatedProfile = formEntries[updateProfileId];
+  console.log("updatedName", updatedProfile);
 
   try {
     const req = await fetch(`http://localhost:3000/api/users/${id}`, {
@@ -26,7 +26,7 @@ export const action = async ({ request }: ActionArgs) => {
       },
       body: JSON.stringify({
         ...formEntries,
-        firstName: updatedName,
+        formEntries: updatedProfile,
       }),
     });
     return json({ status: "success" });
@@ -51,19 +51,19 @@ export default function Character() {
             className="flex w-80 flex-col justify-start gap-5">
             <input type="hidden" name="id" value={user.id} />
             <input
-              className="rounded-md border border-gray-300 py-2 px-4 text-[#333]"
+              className="rounded-md border border-gray-300 px-4 py-2 text-[#333]"
               type="text"
               name="firstName"
               defaultValue={user.firstName}
             />
             <input
-              className="rounded-md border border-gray-300 py-2 px-4 text-[#333]"
+              className="rounded-md border border-gray-300 px-4 py-2 text-[#333]"
               type="text"
               name="lastName"
               defaultValue={user.lastName}
             />
             <input
-              className="rounded-md border border-gray-300 py-2 px-4 text-[#333]"
+              className="rounded-md border border-gray-300 px-4 py-2 text-[#333]"
               type="text"
               name="email"
               defaultValue={user.email}
