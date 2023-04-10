@@ -16,7 +16,7 @@ export const DefaultPageLayout = ({
       <Navbar></Navbar>
       <div className="flex h-full w-full flex-col gap-8 p-16">
         <div className="flex gap-8">
-          <h2 className="text-[24px]">{title}</h2>
+          <h2 className="h-11 text-[24px]">{title}</h2>
           {buttonChildren}
         </div>
         <div className="h-full w-full">{children}</div>

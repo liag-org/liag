@@ -6,7 +6,7 @@ import { getUserSession } from "@/session.server";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import type { ActionArgs, LoaderArgs } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
-import { json, useNavigate } from "react-router";
+import { json } from "react-router";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const userSession = await getUserSession(request);
@@ -136,7 +136,6 @@ export default function Quest() {
   }) => {
     submit(e.currentTarget, { replace: true });
   };
-  const navigate = useNavigate();
 
   return (
     <div className="relative flex h-full justify-between">

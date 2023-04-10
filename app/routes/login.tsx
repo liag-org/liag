@@ -62,9 +62,9 @@ export default function Login() {
           </button>
         </Form>
         <div className="flex gap-1">
-          <h3 className="text-[12px] text-[#9F9F9F]">Forget password?</h3>
-          <Link className="text-[12px] text-[#7369F1]" to={"/register"}>
-            Click here
+          <h3 className="text-[14px] text-[#9F9F9F]">Not a member?</h3>
+          <Link className="text-[14px] text-[#7369F1]" to={"/register"}>
+            Register
           </Link>
         </div>
       </div>

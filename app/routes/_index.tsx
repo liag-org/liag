@@ -112,7 +112,7 @@ export default function _index() {
                             key={quest.id}
                             className=" relative flex w-72 flex-col justify-between rounded border border-[#363636] bg-[#262626]  ">
                             <div
-                              className="flex h-full w-full justify-between p-5 text-[14px] hover:cursor-pointer"
+                              className="flex h-full w-full justify-between p-5 text-[14px] hover:cursor-pointer "
                               onClick={() => {
                                 if (clickedQuestId === quest.id) {
                                   setIsQuestVisible(!isQuestVisible);
@@ -121,16 +121,25 @@ export default function _index() {
                                   setIsQuestVisible(true);
                                 }
                               }}>
-                              {quest.title} -{" "}
-                              {
-                                quest.tasks.filter(
-                                  (task: { completed: boolean }) =>
-                                    task.completed === true,
-                                ).length
-                              }
-                              /{quest.tasks.length}
+                              <div className="flex w-[90%] justify-between">
+                                <Link
+                                  className="truncate hover:underline"
+                                  title={quest.title}
+                                  to={"/quests/" + quest.id}>
+                                  {quest.title}
+                                </Link>
+                                <p>
+                                  {
+                                    quest.tasks.filter(
+                                      (task: { completed: boolean }) =>
+                                        task.completed === true,
+                                    ).length
+                                  }
+                                  /{quest.tasks.length}
+                                </p>
+                              </div>
                               <img
-                                className={`transform ${
+                                className={`w-2 transform ${
                                   clickedQuestId === quest.id && isQuestVisible
                                     ? "rotate-90"
                                     : "rotate-0"
@@ -177,11 +186,6 @@ export default function _index() {
                                       name={task.id}
                                       value="false"
                                     />
-                                    {/* <input
-                                      type="hidden"
-                                      name="action"
-                                      value="update-task"
-                                    /> */}
                                     <CustomCheckbox
                                       className="mt-[3px]"
                                       id={task.id}
