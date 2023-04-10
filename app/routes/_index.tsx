@@ -40,13 +40,15 @@ export const action = async ({ request }: ActionArgs) => {
   const updatedTask = tasks.find(
     (task: { id: string }) => task.id === updatedTaskId,
   );
-  console.log("updatedTask", updatedTask);
+
   updatedTask.completed = !updatedTask.completed;
   const previousTaskIndex = tasks.findIndex(
     (task: { id: string }) => task.id === updatedTaskId,
   );
+
   tasks.splice(previousTaskIndex, 1, updatedTask);
   const env = getEnv();
+
   try {
     const req = await fetch(`${env.API_URL}/api/quests/${questId}`, {
       method: "PATCH",
@@ -72,8 +74,7 @@ export default function _index() {
   const data = matches.find(match => match.id === "root");
   const { user } = data?.data || {};
   const { quests } = useLoaderData();
-  console.log("quest", quests);
-  console.log("user", user);
+
   const submit = useSubmit();
   const handleChange = (e: {
     currentTarget:

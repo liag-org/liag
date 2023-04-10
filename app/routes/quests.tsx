@@ -42,7 +42,7 @@ export default function Quests() {
   // data coming from the root loader function
   const data = matches.find(match => match.id === "root");
   const { userSession } = data?.data || {};
-  const { categories, quests, error } = useLoaderData();
+  const { categories, quests } = useLoaderData();
   const [clickedCategoryId, setClickedCategoryId] = useState<string | null>(
     null,
   );

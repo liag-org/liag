@@ -33,17 +33,19 @@ export const loader = async ({ request }: LoaderArgs) => {
   const locale = await i18next.getLocale(request);
   const userSession = await getUserSession(request);
   const ENV = getBrowserEnvironment();
+
   let userRequest;
   let isExpired;
   let levels;
 
   if (userSession) {
     console.info("userSession", "exist");
-    userRequest = await getUserById(userSession.token, userSession.user.id);
     const expires = new Date(userSession.exp * 1000);
     const now = new Date();
     isExpired = isAfter(now, expires);
     if (isExpired) return await logout(request);
+
+    userRequest = await getUserById(userSession.token, userSession.user.id);
     levels = await getLevels(userSession.token);
   }
 

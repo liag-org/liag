@@ -13,7 +13,7 @@ export const DefaultPageLayout = ({
 }: Props) => {
   return (
     <section className="flex h-screen">
-      <Navbar></Navbar>
+      <Navbar />
       <div className="flex h-full w-full flex-col gap-8 p-16">
         <div className="flex gap-8">
           <h2 className="h-11 text-[24px]">{title}</h2>

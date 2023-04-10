@@ -5,37 +5,6 @@ import type { ActionArgs } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 
-export const action = async ({ request }: ActionArgs) => {
-  const userSession = await getUserSession(request);
-  if (!userSession) return redirect("/login");
-  const body = await request.formData();
-  const formEntries = Object.fromEntries(body.entries());
-  const id = formEntries.id;
-  console.log("formEntries", formEntries);
-
-  const updateProfileId = Object.keys(formEntries)[1];
-  const updatedProfile = formEntries[updateProfileId];
-  console.log("updatedName", updatedProfile);
-
-  try {
-    const req = await fetch(`http://localhost:3000/api/users/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${userSession.token}`,
-      },
-      body: JSON.stringify({
-        ...formEntries,
-        formEntries: updatedProfile,
-      }),
-    });
-    return json({ status: "success" });
-  } catch (error) {
-    console.error(error);
-    return json({ error: "Invalid credentials" }, { status: 401 });
-  }
-};
-
 export default function Character() {
   const matches = useMatches();
   const data = matches.find(match => match.id === "root");
@@ -76,3 +45,34 @@ export default function Character() {
     </div>
   );
 }
+
+export const action = async ({ request }: ActionArgs) => {
+  const userSession = await getUserSession(request);
+  if (!userSession) return redirect("/login");
+  const body = await request.formData();
+  const formEntries = Object.fromEntries(body.entries());
+  const id = formEntries.id;
+  console.log("formEntries", formEntries);
+
+  const updateProfileId = Object.keys(formEntries)[1];
+  const updatedProfile = formEntries[updateProfileId];
+  console.log("updatedName", updatedProfile);
+
+  try {
+    const req = await fetch(`http://localhost:3000/api/users/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${userSession.token}`,
+      },
+      body: JSON.stringify({
+        ...formEntries,
+        formEntries: updatedProfile,
+      }),
+    });
+    return json({ status: "success" });
+  } catch (error) {
+    console.error(error);
+    return json({ error: "Invalid credentials" }, { status: 401 });
+  }
+};
