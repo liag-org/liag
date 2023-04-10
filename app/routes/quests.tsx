@@ -63,6 +63,7 @@ export default function Quests() {
         <div className="flex h-full max-w-[1024px] rounded border border-[#363636]">
           {userSession ? (
             <nav className="flex w-[30%] flex-col justify-between border-r-[1px] border-[#363636]">
+              {/* make scrollable each ul since a certain size */}
               <ul>
                 {categories.docs.map(
                   (category: { id: string; title: string }) => (
@@ -75,9 +76,9 @@ export default function Quests() {
                           setIsCategoryVisible(true);
                         }
                       }}
-                      className={` relative cursor-pointer border-b border-[#363636] bg-[#171717] py-5 px-5 text-[16px]`}
+                      className="relative cursor-pointer border-b border-[#363636] bg-[#171717] px-5 py-5 text-[16px]"
                       key={category.id}>
-                      <div className={`flex flex-col gap-10 `}>
+                      <div className="flex flex-col gap-10">
                         <div className="flex justify-between">
                           <h4 className="flex items-center gap-2">
                             {category.title}
@@ -111,7 +112,7 @@ export default function Quests() {
                         </div>
 
                         <ul
-                          className="text-[14px]"
+                          className="max-h-32 overflow-y-auto pr-2 text-[14px]"
                           style={{
                             display:
                               clickedCategoryId === category.id &&
@@ -124,14 +125,14 @@ export default function Quests() {
                                   quest.category.id === category.id &&
                                   quest.completed === false,
                               ).length > 0
-                                ? "block"
+                                ? "block "
                                 : "none",
                           }}>
                           <span
                             className={
                               clickedCategoryId === category.id &&
                               isCategoryVisible
-                                ? "absolute top-16 left-0 block h-[1px] w-full bg-[#363636] "
+                                ? "absolute left-0 top-16 block h-[1px] w-full bg-[#363636] "
                                 : "hidden"
                             }></span>
                           {quests && quests.docs.length > 0 ? (
@@ -148,14 +149,15 @@ export default function Quests() {
                                 <li key={quest.id}>
                                   <NavLink
                                     to={`/quests/${quest.id}`}
-                                    className="block w-full rounded p-3 text-[#fff] hover:bg-[#363636] hover:text-[#fff]">
+                                    className="block w-full truncate rounded p-3 text-[#fff] hover:bg-[#363636]"
+                                    title={quest.title}>
                                     {quest.title}
                                   </NavLink>
                                 </li>
                               ))
                           ) : (
                             <li>
-                              <span className="block w-full rounded p-3 text-[#fff] hover:bg-[#363636] hover:text-[#fff]">
+                              <span className="block w-full rounded p-3 text-[#fff] hover:bg-[#363636]">
                                 No quests
                               </span>
                             </li>
@@ -167,7 +169,7 @@ export default function Quests() {
                 )}
               </ul>
               <div
-                className="relative cursor-pointer border-t border-[#363636] bg-[#171717] py-5 px-5 text-[16px]"
+                className="relative cursor-pointer border-t border-[#363636] bg-[#171717] px-5 py-5 text-[16px]"
                 onClick={() => {
                   if (clickedCategoryId === "completed") {
                     setIsCategoryVisible(!isCategoryVisible);
@@ -206,7 +208,7 @@ export default function Quests() {
                   <span
                     className={
                       clickedCategoryId === "completed" && isCategoryVisible
-                        ? "absolute top-16 left-0 block h-[1px] w-full bg-[#363636] "
+                        ? "absolute left-0 top-16 block h-[1px] w-full bg-[#363636] "
                         : "hidden"
                     }></span>
 
@@ -217,7 +219,7 @@ export default function Quests() {
                       quests.docs.filter(
                         (quest: { completed: boolean }) => quest.completed,
                       ).length > 0
-                        ? "block text-[14px]"
+                        ? "block max-h-48 overflow-y-auto pr-2 text-[14px]"
                         : "hidden"
                     }>
                     {quests.docs

@@ -14,4 +14,45 @@
     -webkit-appearance: none;
     margin: 0;
   }
+
+  * {
+    scrollbar-width: 10px;
+    scrollbar-color: #363636 #1f1f1f;
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #1f1f1f;
+    border-radius: 5px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #363636;
+    border-radius: 14px;
+    border: 3px solid #363636;
+  }
+  /* 
+  *[title]:before {
+    content: attr(title);
+    background-color: #363636;
+    color: #fff;
+    font-size: 14px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    position: absolute;
+    left: 20%;
+    top: -20%;
+    z-index: 1;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition-delay: 1s;
+  }
+  *[title]:hover:before {
+    opacity: 1;
+    pointer-events: auto;
+  } */
 }

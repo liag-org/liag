@@ -84,8 +84,8 @@ export default function Register() {
           </button>
         </Form>
         <div className="flex gap-1">
-          <h3 className="text-[12px] text-[#9F9F9F]">Already member?</h3>
-          <Link className="text-[12px] text-[#7369F1]" to={"/login"}>
+          <h3 className="text-[14px] text-[#9F9F9F]">Already member?</h3>
+          <Link className="text-[14px] text-[#7369F1]" to={"/login"}>
             Login
           </Link>
         </div>
