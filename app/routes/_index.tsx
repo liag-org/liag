@@ -96,7 +96,7 @@ export default function _index() {
         <div>
           <DefaultPageLayout title="Home">
             {quests && (
-              <div className=" flex max-h-[700px] min-h-fit w-fit gap-5 rounded border border-[#363636] bg-[#262626] p-5">
+              <div className=" flex max-h-[800px] min-h-fit w-fit gap-5 rounded border border-[#363636] bg-[#262626] p-5">
                 <div className="flex flex-col gap-5 ">
                   <h3 className="text-[20px] ">Quests</h3>
                   <ul className="flex flex-col gap-5 ">
@@ -124,12 +124,9 @@ export default function _index() {
                                 }
                               }}>
                               <div className="flex w-[90%] justify-between">
-                                <Link
-                                  className="truncate hover:underline"
-                                  title={quest.title}
-                                  to={"/quests/" + quest.id}>
+                                <p className="truncate" title={quest.title}>
                                   {quest.title}
-                                </Link>
+                                </p>
                                 <p>
                                   {
                                     quest.tasks.filter(
@@ -155,7 +152,7 @@ export default function _index() {
                                 clickedQuestId === quest.id &&
                                 isQuestVisible &&
                                 quest.tasks.length > 0
-                                  ? "absolute top-[61px] left-0 block h-[1px] w-full bg-[#363636] "
+                                  ? "absolute left-0 top-[61px] block h-[1px] w-full bg-[#363636] "
                                   : "hidden"
                               }></span>
 
@@ -202,6 +199,11 @@ export default function _index() {
                                   </Form>
                                 ),
                               )}
+                              <Link
+                                className="self-end text-[14px] text-[#7369F1] hover:underline"
+                                to={"/quests/" + quest.id}>
+                                Go to quest
+                              </Link>
                             </div>
                           </li>
                         ),
