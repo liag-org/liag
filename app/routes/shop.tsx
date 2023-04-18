@@ -55,7 +55,7 @@ export default function Shop() {
                   classe.title === selectedClasse
                     ? "text-[#E4BC2F]"
                     : "text-[#7E7E7E]"
-                } font-bold`}>
+                }`}>
                 {classe.title}
               </button>
             ))}

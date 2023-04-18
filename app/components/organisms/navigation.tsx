@@ -23,7 +23,7 @@ export default function Navbar() {
                 <img
                   className="rounded"
                   src={`http://localhost:3000${user.avatar?.url}`}
-                  alt="PP zak"
+                  alt="PP"
                 />
               </div>
               <div className="capitalize">{user.firstName}</div>
@@ -35,9 +35,9 @@ export default function Navbar() {
                 <span>Niveau :</span> {matchedLevel?.level}
               </div>
               <div className="h-5">
-                <div className="h-[6px] rounded bg-[#1E1E1E]">
+                <div className="h-[6px] rounded bg-[#7e7e7e]">
                   <div
-                    className="h-full rounded bg-[#7e7e7e]"
+                    className="h-full rounded bg-[#69a2f1]"
                     style={{
                       width: `${
                         (user.xp / matchedLevel?.expToNextLevel) * 100
@@ -45,7 +45,7 @@ export default function Navbar() {
                     }}
                   />
                 </div>
-                <div className="mt-1 flex justify-between text-[14px] text-[#7E7E7E]">
+                <div className="mt-1 flex justify-between text-[14px] text-[#69a2f1]">
                   <div>{user.xp} xp</div>
                   <div>{matchedLevel?.expToNextLevel} xp</div>
                 </div>
@@ -62,7 +62,7 @@ export default function Navbar() {
             </NavItem>
             <Link
               to={`/quests/create`}
-              className="absolute top-2/4 right-[12px] flex -translate-y-2/4 items-center gap-2 rounded border border-[#FAFAFA] p-1 pr-2 text-[12px] font-semibold text-[#FAFAFA] hover:bg-[#363636]">
+              className="absolute right-[12px] top-2/4 flex -translate-y-2/4 items-center gap-2 rounded border border-[#FAFAFA] p-1 pr-2 text-[12px] font-semibold text-[#FAFAFA] hover:bg-[#363636]">
               <img src="/assets/icons/plus-white.svg" alt="plus icon" />
               NEW
             </Link>

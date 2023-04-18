@@ -46,6 +46,13 @@ export default function Character() {
       <DefaultPageLayout title={"Character"}>
         <div className="flex flex-col gap-10">
           <h1>{user.firstName} </h1>
+          <div className="w-32 rounded bg-gradient-to-r from-[#AE8626] via-[#F7EF8A] to-[#EDC967] p-1">
+            <img
+              className="round ;ed"
+              src={`http://localhost:3000${user.avatar?.url}`}
+              alt="PP zak"
+            />
+          </div>
           <Form
             method="post"
             className="flex w-80 flex-col justify-start gap-5">
