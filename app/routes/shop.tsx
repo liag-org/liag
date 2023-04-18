@@ -82,32 +82,35 @@ export default function Shop() {
                     favorite: boolean;
                   },
                   index: number,
-                ) => (
-                  <li
-                    key={index}
-                    className={`relative w-[220px] rounded border border-[#363636] p-5 ${
-                      index === 0 || index === 1
-                        ? "col-span-1 row-span-2 "
-                        : "col-span-1 row-span-1 "
-                    }`}>
-                    <div className="absolute right-4 top-4">
-                      <img src="/assets/icons/fav.svg" alt="" />
-                    </div>
-
-                    <div>
-                      <div className=" absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                        <img
-                          className=" h-full w-32 overflow-hidden object-cover"
-                          src={`http://localhost:3000${product.image.url}`}
-                          alt={product.image.alt}
-                        />
+                ) => {
+                  console.log(product);
+                  return (
+                    <li
+                      key={index}
+                      className={`relative w-[220px] rounded border border-[#363636] p-5 ${
+                        index === 0 || index === 1
+                          ? "col-span-1 row-span-2 "
+                          : "col-span-1 row-span-1 "
+                      }`}>
+                      <div className="absolute right-4 top-4">
+                        <img src="/assets/icons/fav.svg" alt="" />
                       </div>
-                    </div>
-                    <div className="absolute bottom-4 left-1/2 w-full -translate-x-1/2 text-center">
-                      <div className="underline">{product.name}</div>
-                    </div>
-                  </li>
-                ),
+
+                      <div>
+                        <div className=" absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                          <img
+                            className=" h-full w-32 overflow-hidden object-cover"
+                            src={product.image.url}
+                            alt={product.image.alt}
+                          />
+                        </div>
+                      </div>
+                      <div className="absolute bottom-4 left-1/2 w-full -translate-x-1/2 text-center">
+                        <div className="underline">{product.name}</div>
+                      </div>
+                    </li>
+                  );
+                },
               )}
           </ul>
         </div>

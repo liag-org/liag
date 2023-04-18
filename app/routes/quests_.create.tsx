@@ -1,5 +1,10 @@
-import { Form } from "@remix-run/react";
-import type { ActionArgs, ActionFunction } from "@remix-run/node";
+import { Form, useLoaderData } from "@remix-run/react";
+import type {
+  ActionArgs,
+  ActionFunction,
+  LoaderArgs,
+  LoaderFunction,
+} from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json } from "react-router";
 import { getUserSession } from "@/session.server";
@@ -43,7 +48,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
   }
 };
 
-export const loader = async ({ request }: { request: Request }) => {
+export const loader: LoaderFunction = async ({ request }: LoaderArgs) => {
   const userSession = await getUserSession(request);
   const env = getEnv();
   if (!userSession) return redirect("/login");
@@ -67,6 +72,7 @@ export default function CreateQuest() {
     title: "",
     completed: false,
   });
+  const data = useLoaderData<typeof loader>();
   const [tasks, setSubTasks] = useState<
     { title: string; completed: boolean }[]
   >([]);
@@ -88,6 +94,7 @@ export default function CreateQuest() {
             name="category"
             label="Category"
             placeholder="Select a category"
+            options={data.categories.docs}
           />
           <input type="hidden" name="tasks" value={JSON.stringify(tasks)} />
           <div className="flex max-w-[360px] items-center justify-between">

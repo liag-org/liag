@@ -3,6 +3,7 @@ import { getUserById } from "@/api/get-user";
 import { PrimaryButton } from "@/components/atoms/button";
 import { CustomCheckbox } from "@/components/atoms/checkbox";
 import { getUserSession } from "@/session.server";
+import getEnv from "@/utils/get-env";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import type { ActionArgs, LoaderArgs } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
@@ -28,7 +29,6 @@ export const action = async ({ request, params }: ActionArgs) => {
     case "completed":
       {
         const user = await getUserById(userSession.token, userSession.user.id);
-
         try {
           const [responseCompleted, responseUpdateGold] = await Promise.all([
             fetch(`${env.API_URL}/api/quests/${params?.questId}`, {
