@@ -9,6 +9,7 @@ export function getUserLevel(
 ): {
   level: number;
   expToNextLevel: number;
+  currentLevelXp: number;
 } {
   let currentLevel: Level = levels[0];
   let nextLevel: Level = levels[1];
@@ -26,13 +27,22 @@ export function getUserLevel(
     return {
       level: 0,
       expToNextLevel: 0,
+      currentLevelXp: 0,
     };
   }
 
   if (!nextLevel) {
-    return { level: currentLevel.level, expToNextLevel: 0 };
+    return {
+      level: currentLevel.level,
+      expToNextLevel: 0,
+      currentLevelXp: currentLevel.xp,
+    };
   }
 
   const expToNextLevel = nextLevel.xp - currentLevel.xp;
-  return { level: currentLevel.level, expToNextLevel };
+  return {
+    level: currentLevel.level,
+    expToNextLevel,
+    currentLevelXp: currentLevel.xp,
+  };
 }

@@ -1,3 +1,4 @@
+import { PrimaryButton } from "@/components/atoms/button";
 import { DefaultPageLayout } from "@/components/templates/default-layout";
 import { getUserSession } from "@/session.server";
 import { Form, useMatches } from "@remix-run/react";
@@ -16,11 +17,7 @@ export default function Character() {
         <div className="flex flex-col gap-10">
           <h1>{user.firstName} </h1>
           <div className="w-32 rounded bg-gradient-to-r from-[#AE8626] via-[#F7EF8A] to-[#EDC967] p-1">
-            <img
-              className="round ;ed"
-              src={`http://localhost:3000${user.avatar?.url}`}
-              alt="PP zak"
-            />
+            <img className="round ;ed" src={user.avatar?.url} alt="PP zak" />
           </div>
           <Form
             method="post"
@@ -45,7 +42,9 @@ export default function Character() {
               defaultValue={user.email}
             />
 
-            <button type="submit">Update</button>
+            <PrimaryButton type="submit" name={"Update"} className={""}>
+              UPDATE
+            </PrimaryButton>
           </Form>
         </div>
       </DefaultPageLayout>

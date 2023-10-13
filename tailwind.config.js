@@ -29,6 +29,7 @@ module.exports = {
     colors: {
       "main-bg": "#121212",
       "dark-bg": "#171717",
+      "light-bg": "#FF0000",
     },
   },
   plugins: [

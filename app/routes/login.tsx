@@ -10,6 +10,7 @@ export const action = async ({ request }: ActionArgs) => {
   const body = await request.formData();
   const formData = Object.fromEntries(body.entries());
   const env = getEnv();
+  console.log(env.API_URL);
   try {
     const req = await fetch(`${env.API_URL}/api/users/login`, {
       method: "POST",

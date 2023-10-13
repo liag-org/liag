@@ -208,7 +208,7 @@ export default function Quest() {
             type="submit"
             name="pinned"
             className={
-              "flex h-fit w-fit items-center gap-2 self-end whitespace-nowrap rounded border border-[#363636] py-[10px] px-3 text-[14px] " +
+              "flex h-fit w-fit items-center gap-2 self-end whitespace-nowrap rounded border border-[#363636] px-3 py-[10px] text-[14px] " +
               (data.pinned ? "bg-[#363636] text-white" : "")
             }>
             <img

@@ -51,6 +51,7 @@ export default function Quests() {
   return (
     <div className="w-full">
       <DefaultPageLayout
+        className="flex gap-10"
         title="Quests"
         buttonChildren={
           <Link
@@ -60,10 +61,9 @@ export default function Quests() {
             CREATE NEW
           </Link>
         }>
-        <div className="flex h-full max-w-[1024px] rounded border border-[#363636]">
+        <div className="flex h-full w-[1024px] rounded border border-[#363636]">
           {userSession ? (
-            <nav className="flex w-[30%] flex-col justify-between border-r-[1px] border-[#363636]">
-              {/* make scrollable each ul since a certain size */}
+            <nav className=" flex w-[30%] flex-col justify-between border-r-[1px] border-[#363636]">
               <ul>
                 {categories.docs.map(
                   (category: { id: string; title: string }) => (

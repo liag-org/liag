@@ -6,12 +6,15 @@ export default function Navbar() {
   const matches = useMatches();
   const data = matches.find(match => match.id === "root");
   const { user, levels } = data?.data || {};
+  console.log(levels);
   const matchedLevel = getUserLevel(
     levels.docs.sort(
       (a: { level: number }, b: { level: number }) => a.level - b.level,
     ),
+
     user?.xp,
   );
+  console.log(matchedLevel);
 
   return (
     <div className="flex h-full w-64 flex-col justify-between bg-[#171717]">
@@ -20,11 +23,7 @@ export default function Navbar() {
           {user && (
             <div className="flex flex-col gap-3">
               <div className="rounded bg-gradient-to-r from-[#AE8626] via-[#F7EF8A] to-[#EDC967] p-1 ">
-                <img
-                  className="rounded"
-                  src={`http://localhost:3000${user.avatar?.url}`}
-                  alt="PP"
-                />
+                <img className="rounded" src={user.avatar?.url} alt="PP" />
               </div>
               <div className="capitalize">{user.firstName}</div>
               <div>
@@ -40,13 +39,15 @@ export default function Navbar() {
                     className="h-full rounded bg-[#69a2f1]"
                     style={{
                       width: `${
-                        (user.xp / matchedLevel?.expToNextLevel) * 100
+                        ((user.xp - matchedLevel.currentLevelXp) /
+                          matchedLevel?.expToNextLevel) *
+                        100
                       }%`,
                     }}
                   />
                 </div>
                 <div className="mt-1 flex justify-between text-[14px] text-[#69a2f1]">
-                  <div>{user.xp} xp</div>
+                  <div>{user.xp - matchedLevel.currentLevelXp} xp</div>
                   <div>{matchedLevel?.expToNextLevel} xp</div>
                 </div>
               </div>

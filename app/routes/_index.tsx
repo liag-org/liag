@@ -96,119 +96,129 @@ export default function _index() {
         <div>
           <DefaultPageLayout title="Home">
             {quests && (
-              <div className=" flex max-h-[800px] min-h-fit w-fit gap-5 rounded border border-[#363636] bg-[#262626] p-5">
-                <div className="flex flex-col gap-5 ">
-                  <h3 className="text-[20px] ">Quests</h3>
-                  <ul className="flex flex-col gap-5 ">
-                    {quests
-                      .filter(
-                        (quests: { pinned: boolean }) => quests.pinned === true,
-                      )
-                      .map(
-                        (quest: {
-                          id: string;
-                          title: string;
-                          tasks: string;
-                        }) => (
-                          <li
-                            key={quest.id}
-                            className=" relative flex w-72 flex-col justify-between rounded border border-[#363636] bg-[#262626]  ">
-                            <div
-                              className="flex h-full w-full justify-between p-5 text-[14px] hover:cursor-pointer "
-                              onClick={() => {
-                                if (clickedQuestId === quest.id) {
-                                  setIsQuestVisible(!isQuestVisible);
-                                } else {
-                                  setClickedQuestId(quest.id);
-                                  setIsQuestVisible(true);
-                                }
-                              }}>
-                              <div className="flex w-[90%] justify-between">
-                                <p className="truncate" title={quest.title}>
-                                  {quest.title}
-                                </p>
-                                <p>
-                                  {
-                                    quest.tasks.filter(
-                                      (task: { completed: boolean }) =>
-                                        task.completed === true,
-                                    ).length
+              <div className="flex gap-5">
+                <div className=" flex max-h-[800px] min-h-fit w-fit gap-5 rounded border border-[#363636] bg-[#262626] p-5">
+                  <div className="flex flex-col gap-5 ">
+                    <h3 className="text-[20px] ">Quests</h3>
+                    <ul className="flex flex-col gap-5 ">
+                      {quests
+                        .filter(
+                          (quests: { pinned: boolean }) =>
+                            quests.pinned === true,
+                        )
+                        .map(
+                          (quest: {
+                            id: string;
+                            title: string;
+                            tasks: string;
+                          }) => (
+                            <li
+                              key={quest.id}
+                              className=" relative flex w-72 flex-col justify-between rounded border border-[#363636] bg-[#262626]  ">
+                              <div
+                                className="flex h-full w-full justify-between p-5 text-[14px] hover:cursor-pointer "
+                                onClick={() => {
+                                  if (clickedQuestId === quest.id) {
+                                    setIsQuestVisible(!isQuestVisible);
+                                  } else {
+                                    setClickedQuestId(quest.id);
+                                    setIsQuestVisible(true);
                                   }
-                                  /{quest.tasks.length}
-                                </p>
+                                }}>
+                                <div className="flex w-[90%] justify-between">
+                                  <p className="truncate" title={quest.title}>
+                                    {quest.title}
+                                  </p>
+                                  <p>
+                                    {
+                                      quest.tasks.filter(
+                                        (task: { completed: boolean }) =>
+                                          task.completed === true,
+                                      ).length
+                                    }
+                                    /{quest.tasks.length}
+                                  </p>
+                                </div>
+                                <img
+                                  className={`w-2 transform ${
+                                    clickedQuestId === quest.id &&
+                                    isQuestVisible
+                                      ? "rotate-90"
+                                      : "rotate-0"
+                                  } transition-transform duration-300`}
+                                  src="/assets/icons/drop-arrow.svg"
+                                  alt="arrow icon"
+                                />
                               </div>
-                              <img
-                                className={`w-2 transform ${
-                                  clickedQuestId === quest.id && isQuestVisible
-                                    ? "rotate-90"
-                                    : "rotate-0"
-                                } transition-transform duration-300`}
-                                src="/assets/icons/drop-arrow.svg"
-                                alt="arrow icon"
-                              />
-                            </div>
-                            <span
-                              className={
-                                clickedQuestId === quest.id &&
-                                isQuestVisible &&
-                                quest.tasks.length > 0
-                                  ? "absolute left-0 top-[61px] block h-[1px] w-full bg-[#363636] "
-                                  : "hidden"
-                              }></span>
+                              <span
+                                className={
+                                  clickedQuestId === quest.id &&
+                                  isQuestVisible &&
+                                  quest.tasks.length > 0
+                                    ? "absolute left-0 top-[61px] block h-[1px] w-full bg-[#363636] "
+                                    : "hidden"
+                                }></span>
 
-                            <div
-                              className={
-                                clickedQuestId === quest.id &&
-                                isQuestVisible &&
-                                quest.tasks.length > 0
-                                  ? "flex flex-col gap-3 p-5"
-                                  : "hidden"
-                              }>
-                              {quest.tasks.map(
-                                (task: {
-                                  id: string;
-                                  title: string;
-                                  completed: boolean;
-                                }) => (
-                                  <Form
-                                    onChange={handleChange}
-                                    method="post"
-                                    className=" flex items-start gap-[10px]"
-                                    key={task.id}>
-                                    <input
-                                      type="hidden"
-                                      name={"questId"}
-                                      value={quest.id}
-                                    />
-                                    <input
-                                      type="hidden"
-                                      name={task.id}
-                                      value="false"
-                                    />
-                                    <CustomCheckbox
-                                      className="mt-[3px]"
-                                      id={task.id}
-                                      checked={task.completed}
-                                      name={task.id}
-                                    />
-                                    <label
-                                      className=" w-56 cursor-pointer text-[14px]"
-                                      htmlFor={task.id}>
-                                      {task.title}
-                                    </label>
-                                  </Form>
-                                ),
-                              )}
-                              <Link
-                                className="self-end text-[14px] text-[#7369F1] hover:underline"
-                                to={"/quests/" + quest.id}>
-                                Go to quest
-                              </Link>
-                            </div>
-                          </li>
-                        ),
-                      )}
-                  </ul>
+                              <div
+                                className={
+                                  clickedQuestId === quest.id &&
+                                  isQuestVisible &&
+                                  quest.tasks.length > 0
+                                    ? "flex flex-col gap-3 p-5"
+                                    : "hidden"
+                                }>
+                                {quest.tasks.map(
+                                  (task: {
+                                    id: string;
+                                    title: string;
+                                    completed: boolean;
+                                  }) => (
+                                    <Form
+                                      onChange={handleChange}
+                                      method="post"
+                                      className=" flex items-start gap-[10px]"
+                                      key={task.id}>
+                                      <input
+                                        type="hidden"
+                                        name={"questId"}
+                                        value={quest.id}
+                                      />
+                                      <input
+                                        type="hidden"
+                                        name={task.id}
+                                        value="false"
+                                      />
+                                      <CustomCheckbox
+                                        className="mt-[3px]"
+                                        id={task.id}
+                                        checked={task.completed}
+                                        name={task.id}
+                                      />
+                                      <label
+                                        className=" w-56 cursor-pointer text-[14px]"
+                                        htmlFor={task.id}>
+                                        {task.title}
+                                      </label>
+                                    </Form>
+                                  ),
+                                )}
+                                <Link
+                                  className="self-end text-[14px] text-[#7369F1] hover:underline"
+                                  to={"/quests/" + quest.id}>
+                                  Go to quest
+                                </Link>
+                              </div>
+                            </li>
+                          ),
+                        )}
+                    </ul>
+                  </div>
+                </div>
+                <div className="flex max-h-[800px] min-h-fit w-fit gap-5 rounded border border-[#363636] bg-[#262626] p-5">
+                  <div className="flex flex-col gap-5 ">
+                    <h3 className="text-[20px] ">Shop</h3>
+                    <ul></ul>
+                  </div>
                 </div>
               </div>
             )}
